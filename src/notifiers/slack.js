@@ -16,8 +16,8 @@ export default class SlackNotifier {
     }
     this.slack.send({
         text: 'Application ' + app.name + ' has been sucessfully deployed. It is available at url ' + app.url,
-        channel: this.config.channel,
-        username: this.config.name
+        channel: this.config.slack.channel,
+        username: this.config.slack.name
     })
   }
 
@@ -27,8 +27,8 @@ export default class SlackNotifier {
     }
     this.slack.send({
         text: 'Error during deploying application ' + app.name,
-        channel: this.config.channel,
-        username: this.config.name
+        channel: this.config.slack.channel,
+        username: this.config.slack.name
     })
   }
 
