@@ -37,7 +37,7 @@ let catcher = new WebhookCatcher(config)
 catcher.on('webhook', ({ app }) => {
   winston.info('reploy', app.name)
 
-  let path = path.join(__dirname, config.base, app.name)
+  let path = path.join(__dirname, config.base, app.path ? app.path : app.name)
 
   console.log('git pull')
   console.log('npm install')
