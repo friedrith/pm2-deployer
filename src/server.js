@@ -1,9 +1,10 @@
 import winston from 'winston'
 import dotenv from 'dotenv'
 import fs from 'fs'
-// import path from 'path'
+import path from 'path'
 import yaml from 'js-yaml'
 // import pm2 from 'pm2'
+import git from 'simple-git'
 
 import WebhookCatcher from './webhook-catcher'
 
@@ -33,9 +34,23 @@ let catcher = new WebhookCatcher(config)
 catcher.on('webhook', ({ app }) => {
   winston.info('reploy', app.name)
 
-  let path = path.join(__dirname, config.base, app.path ? app.path : app.name)
+  let repositoryPath = path.join(__dirname, config.base, app.path ? app.path : app.name)
 
-  console.log('git pull')
+  let repository = git(repositoryPath)
+
+  repository
+  .raw([
+      'config',
+      '--local',
+      'core.sshCommand',
+      '/usr/bin/ssh -i ' + path.join(__dirname, '../', config.bitbucket_ssh_key)
+  ])
+  .pull(() => {
+    winston.info('app ' + app.name + ' reployed')
+
+  })
+
+  // console.log('git pull')
   console.log('npm install')
   console.log('pm2 restart')
   /*
@@ -52,7 +67,7 @@ catcher.on('webhook', ({ app }) => {
       if (err) {
         winston.log('error', err)
       } else {*/
-        winston.info(`app ${app.name} reployed`)
+        // winston.info(`app ${app.name} reployed`)
       /*}
     })
   })*/
