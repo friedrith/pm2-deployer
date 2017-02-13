@@ -3,8 +3,9 @@ import dotenv from 'dotenv'
 import fs from 'fs'
 import path from 'path'
 import yaml from 'js-yaml'
-// import pm2 from 'pm2'
+import pm2 from 'pm2'
 import git from 'simple-git'
+import { exec } from 'child_process'
 
 import WebhookCatcher from './webhook-catcher'
 
@@ -49,31 +50,37 @@ catcher.on('webhook', ({ app }) => {
     if (err) {
       winston.log('error', err)
     } else {
-      winston.info('app ' + app.name + ' reployed')
+      exec('cd ' + repositoryPath + ' && npm install && npm run build', (error, stdout, stderr) => {
+        if (error) {
+          winston.log('error', err, stdout, stderr)
+        } else {
+          pm2.connect((err) => {
+            if (err) {
+              winston.log('error', err)
+              process.exit(2)
+            }
+
+            pm2.start({
+              name: app.name
+            }, (err, apps) => {
+              pm2.disconnect()
+              if (err) {
+                winston.log('error', err)
+              } else {
+                winston.info('app ' + app.name + ' reployed')
+              }
+            })
+          })
+        }
+      })
     }
   })
 
   // console.log('git pull')
-  console.log('npm install')
-  console.log('pm2 restart')
-  /*
-  pm2.connect((err) => {
-    if (err) {
-      winston.log('error', err)
-      process.exit(2)
-    }
+  // console.log('npm install')
+  // console.log('pm2 restart')
 
-    pm2.start({
-      script: app.script
-    }, (err, apps) => {
-      pm2.disconnect()
-      if (err) {
-        winston.log('error', err)
-      } else {*/
-        // winston.info(`app ${app.name} reployed`)
-      /*}
-    })
-  })*/
+
 
 
 
