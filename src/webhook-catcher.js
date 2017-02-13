@@ -12,9 +12,10 @@ export default class WebhookCatcher extends EventEmitter {
 
     this.app.post('/webhook/bitbucket/:key/:appName', (req, res) => {
       res.send('ok')
-      console.log(req.body)
 
-      if (req.params.key === config.bitbucket_key) {
+      if (req.params.key === config.bitbucket_key && req.body.push) {
+        console.log(JSON.stringify(req.body.push))
+
         for (let app of config.apps) {
           // console.log(app)
           if (app.name === req.params.appName) {
