@@ -1,15 +1,18 @@
 import express from 'express'
 import EventEmitter from 'events'
 import winston from 'winston'
+import bodyParser from 'body-parser'
 
 export default class WebhookCatcher extends EventEmitter {
   constructor (config) {
     super()
     this.app = express()
 
+    this.app.use(bodyParser.json())
+
     this.app.post('/webhook/bitbucket/:key/:appName', (req, res) => {
       res.send('ok')
-      console.log(req)
+      console.log(req.body)
 
       if (req.params.key === config.bitbucket_key) {
         for (let app of config.apps) {

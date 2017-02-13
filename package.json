@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/thibaultfriedrich/pm2-deployer#readme",
   "dependencies": {
+    "body-parser": "^1.16.1",
     "dotenv": "^4.0.0",
     "express": "^4.14.1",
     "js-yaml": "^3.8.1",
