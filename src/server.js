@@ -51,9 +51,9 @@ catcher.on('webhook', ({ app }) => {
       pm2.disconnect()
       if (err) {
         winston.log('error', err)
-      } else {
+      } else {*/
         winston.info(`app ${app.name} reployed`)
-      }
+      /*}
     })
   })*/
 
