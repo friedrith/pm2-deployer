@@ -45,9 +45,12 @@ catcher.on('webhook', ({ app }) => {
       'core.sshCommand',
       '/usr/bin/ssh -i ' + path.join(__dirname, '../', config.bitbucket_ssh_key)
   ])
-  .pull(() => {
-    winston.info('app ' + app.name + ' reployed')
-
+  .pull((err) => {
+    if (err) {
+      winston.log('error', err)
+    } else {
+      winston.info('app ' + app.name + ' reployed')
+    }
   })
 
   // console.log('git pull')
