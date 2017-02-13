@@ -7,7 +7,7 @@ export default class WebhookCatcher extends EventEmitter {
     super()
     this.app = express()
 
-    this.app.get('/webhook/bitbucket/:key/:appName', (req, res) => {
+    this.app.post('/webhook/bitbucket/:key/:appName', (req, res) => {
       res.send('ok')
       console.log(req)
 

@@ -1,21 +1,17 @@
 import winston from 'winston'
 import dotenv from 'dotenv'
 import fs from 'fs'
-import path from 'path'
+// import path from 'path'
 import yaml from 'js-yaml'
-import pm2 from 'pm2'
+// import pm2 from 'pm2'
 
 import WebhookCatcher from './webhook-catcher'
 
 
-try {
-  fs.accessSync(path.join(__dirname, '../.env'), fs.R_OK)
-  // use .env file config
-  dotenv.config()
-} catch (err) {
-  if (process.env.NODE_ENV === 'production') {
-    winston.info(err)
-  } else {
+if (process.env.NODE_ENV !== 'production') {
+  try {
+    dotenv.config()
+  } catch (err) {
     winston.log('error', err)
     process.exit(2)
   }
