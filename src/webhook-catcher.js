@@ -13,25 +13,20 @@ export default class WebhookCatcher extends EventEmitter {
     this.app.post('/webhook/bitbucket/:key/:appName', (req, res) => {
       res.send('ok')
 
-
-      let branch = req.body.push.changes[0].new.name
-
-      console.log(req.body.push.changes, req.body.push.changes[0], req.body.push.changes[0].new, branch)
+      //
+      // let branch = req.body.push.changes[0].new.name
+      //
+      // console.log(req.body.push.changes, req.body.push.changes[0], req.body.push.changes[0].new, branch)
 
 
       if (req.params.key === config.bitbucket_key && req.body.push && req.body.push.changes && req.body.push.changes.length > 0 && req.body.push.changes[0].new.type === 'branch') {
 
         let branch = req.body.push.changes[0].new.name
 
-
-
-        if (branch === config.branch) {
-          // console.log(JSON.stringify(req.body.push, null, 4))
-          for (let app of config.apps) {
-            // console.log(app)
-            if (app.name === req.params.appName) {
-              this.emit('webhook', { app })
-            }
+        for (let app of config.apps) {
+          // console.log(app)
+          if (app.name === req.params.appName && branch === app.branch) {
+            this.emit('webhook', { app })
           }
         }
       }
