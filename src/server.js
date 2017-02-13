@@ -50,11 +50,11 @@ catcher.on('webhook', ({ app }) => {
     if (err) {
       winston.log('error', err)
     } else {
-      exec('cd ' + repositoryPath + ' && npm install && npm run build', (error, stdout, stderr) => {
+      exec('cd ' + repositoryPath + ' && npm install && npm run build && pm2 restart '+app.name, (error, stdout, stderr) => {
         if (error) {
           winston.log('error', err, stdout, stderr)
         } else {
-          pm2.connect((err) => {
+          /*pm2.connect((err) => {
             if (err) {
               winston.log('error', err)
               process.exit(2)
@@ -70,7 +70,8 @@ catcher.on('webhook', ({ app }) => {
                 winston.info('app ' + app.name + ' reployed')
               }
             })
-          })
+          })*/
+          winston.info('app ' + app.name + ' reployed')
         }
       })
     }
