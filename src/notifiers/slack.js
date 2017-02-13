@@ -2,6 +2,7 @@ import Slack from 'node-slack'
 
 export default class SlackNotifier {
   constructor (config) {
+    this.config = config
     if (config.slack) {
       this.slack = new Slack(config.slack.hook_url)
     } else {
@@ -15,8 +16,8 @@ export default class SlackNotifier {
     }
     this.slack.send({
         text: 'Application ' + app.name + ' has been sucessfully deployed. It is available at url ' + app.url,
-        channel: config.channel,
-        username: config.name
+        channel: this.config.channel,
+        username: this.config.name
     })
   }
 
@@ -26,8 +27,8 @@ export default class SlackNotifier {
     }
     this.slack.send({
         text: 'Error during deploying application ' + app.name,
-        channel: config.channel,
-        username: config.name
+        channel: this.config.channel,
+        username: this.config.name
     })
   }
 
