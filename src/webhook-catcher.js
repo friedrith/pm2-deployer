@@ -19,7 +19,7 @@ export default class WebhookCatcher extends EventEmitter {
       // console.log(req.body.push.changes, req.body.push.changes[0], req.body.push.changes[0].new, branch)
 
 
-      if (req.params.token === config.bitbucket_token && req.body.push && req.body.push.changes && req.body.push.changes.length > 0 && req.body.push.changes[0].new.type === 'branch') {
+      if (req.params.token === config.bitbucket.token && req.body.push && req.body.push.changes && req.body.push.changes.length > 0 && req.body.push.changes[0].new.type === 'branch') {
 
         let branch = req.body.push.changes[0].new.name
 
