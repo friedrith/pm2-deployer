@@ -15,7 +15,7 @@ export default class Proxy {
     this.app.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
 
     this.app.use((req, res, next) => {
-
+        winston.info('search app')
         for (let app of config.apps) {
           if (req.headers.host === app.url) {
             var target = 'http://127.0.0.1:' + app.env.PORT
