@@ -18,6 +18,7 @@ export default class Proxy {
         winston.info('search app')
         for (let app of config.apps) {
           if (req.headers.host === app.url) {
+            winston.info('found app', {{app: app.name}})
             var target = 'http://127.0.0.1:' + app.env.PORT
             req._target = target
             this.proxy.web(req, res, { target: target, xfwd: true }, (err) => {
