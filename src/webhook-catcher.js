@@ -2,6 +2,7 @@ import express from 'express'
 import EventEmitter from 'events'
 import winston from 'winston'
 import bodyParser from 'body-parser'
+import crypto from 'crypto'
 
 export default class WebhookCatcher extends EventEmitter {
   constructor (config) {
@@ -9,6 +10,7 @@ export default class WebhookCatcher extends EventEmitter {
     this.app = express()
 
     this.app.use(bodyParser.json())
+    this.app.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
 
     this.app.post('/webhook/bitbucket/:token/:appName', (req, res) => {
       res.send('ok')
@@ -26,8 +28,48 @@ export default class WebhookCatcher extends EventEmitter {
         for (let app of config.apps) {
           // console.log(app)
           if (app.name === req.params.appName && branch === app.branch) {
-            this.emit('webhook', { app })
+            this.emit('webhook', { app:app, from: 'bitbucket' })
           }
+        }
+      }
+    })
+
+    this.app.post('/webhook/github/:appName', (req, res) => {
+      res.send('ok')
+
+      let repository = req.params.repository
+      let event = req.headers['x-github-event']
+      let signature = req.headers['x-hub-signature']
+
+      if (!req.body.ref) {
+        res.sendStatus(200)
+        return
+      }
+
+      let branch = req.body.ref.split('/')[2]
+      let hmac = crypto.createHmac('sha1', config.github.token)
+
+      hmac.update(JSON.stringify(req.body))
+
+      if ('sha1=' + hmac.digest('hex') !== signature) {
+        res.status(404).send('bad signature')
+        return
+      }
+
+      if (event !== 'push') {
+        res.status(404).send('bad event')
+        return
+      }
+
+      if (repository === 'pm2-deployer') {
+        res.sendStatus(200)
+        return
+      }
+
+      for (let app of config.apps) {
+        // console.log(app)
+        if (app.name === req.params.appName && branch === app.branch) {
+          this.emit('webhook', { app: app, from: 'github' })
         }
       }
     })

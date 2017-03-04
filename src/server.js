@@ -7,6 +7,7 @@ import yaml from 'js-yaml'
 import git from 'simple-git'
 import { exec } from 'child_process'
 
+import Proxy from './proxy'
 import WebhookCatcher from './webhook-catcher'
 import SlackNotifier from './notifiers/slack'
 
@@ -32,23 +33,34 @@ try {
 
 let notifier = new SlackNotifier(config)
 
+if ('true' === process.env.PROXY) {
+  new Proxy(config)
+}
+
 let catcher = new WebhookCatcher(config)
 
-catcher.on('webhook', ({ app }) => {
+catcher.on('webhook', ({ app, from }) => {
   winston.info('reploy', app.name)
 
   let repositoryPath = path.join(__dirname, '../', config.base, app.path ? app.path : app.name)
 
   let repository = git(repositoryPath)
 
+  let raw = []
+  if (from === 'bitbucket' && config.bitbucket && config.bitbucket.ssh_key) {
+    raw = [
+        'config',
+        '--local',
+        'core.sshCommand',
+        '/usr/bin/ssh -i ' + path.join(__dirname, '../', config.bitbucket.ssh_key)
+    ]
+  }
+
   repository
-  .raw([
-      'config',
-      '--local',
-      'core.sshCommand',
-      '/usr/bin/ssh -i ' + path.join(__dirname, '../', config.bitbucket.ssh_key)
-  ])
-  .pull((err) => {
+  .raw(raw)
+  .fetch()
+  .checkout(app.branch, (err) => {
+  // .pull((err) => {
     if (err) {
       notifier.error(app)
       winston.log('error', err)
