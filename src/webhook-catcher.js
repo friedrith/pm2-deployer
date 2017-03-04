@@ -38,6 +38,7 @@ export default class WebhookCatcher extends EventEmitter {
 
     this.app.post('/webhook/github/:appName', (req, res) => {
 
+      winston.info('webhook github')
       let repository = req.params.repository
       let event = req.headers['x-github-event']
       let signature = req.headers['x-hub-signature']
@@ -46,6 +47,8 @@ export default class WebhookCatcher extends EventEmitter {
         res.sendStatus(200)
         return
       }
+      winston.info('webhook github 2')
+
 
       let branch = req.body.ref.split('/')[2]
       let hmac = crypto.createHmac('sha1', config.github.token)
@@ -57,22 +60,36 @@ export default class WebhookCatcher extends EventEmitter {
         return
       }
 
+      winston.info('webhook github 3')
+
+
       if (event !== 'push') {
         res.status(404).send('bad event')
         return
       }
+
+      winston.info('webhook github 4')
+
 
       if (repository === 'pm2-deployer') {
         res.sendStatus(200)
         return
       }
 
+      winston.info('webhook github 5')
+
+
       for (let app of config.apps) {
         // console.log(app)
+
+        winston.info('webhook github 6', { app: app.name })
+
         if (app.name === req.params.appName && branch === app.branch) {
           this.emit('webhook', { app: app, from: 'github' })
         }
       }
+
+      winston.info('webhook github 7')
 
       res.send('ok')
     })
