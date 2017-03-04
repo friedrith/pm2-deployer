@@ -58,9 +58,9 @@ catcher.on('webhook', ({ app, from }) => {
 
   repository
   .raw(raw)
-  .fetch()
-  .checkout(app.branch, (err) => {
-  // .pull((err) => {
+  // .fetch()
+  // .checkout(app.branch, (err) => {
+  .pull((err) => {
     if (err) {
       notifier.error(app)
       winston.log('error', err)
