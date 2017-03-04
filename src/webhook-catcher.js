@@ -10,7 +10,7 @@ export default class WebhookCatcher extends EventEmitter {
     super()
     this.app = express()
 
-    this.app.use(morgan())
+    this.app.use(morgan('combined'))
     this.app.use(bodyParser.json())
     this.app.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
 
@@ -37,7 +37,6 @@ export default class WebhookCatcher extends EventEmitter {
     })
 
     this.app.post('/webhook/github/:appName', (req, res) => {
-      res.send('ok')
 
       let repository = req.params.repository
       let event = req.headers['x-github-event']
@@ -83,5 +82,7 @@ export default class WebhookCatcher extends EventEmitter {
     this.server = this.app.listen(process.env.PORT, '127.0.0.1', () => {
       winston.info(`webhook catcher listening on port ${this.server.address().port}`)
     })
+
+    res.send('ok')
   }
 }
