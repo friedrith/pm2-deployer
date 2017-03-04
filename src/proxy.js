@@ -1,6 +1,6 @@
 import express from 'express'
 import httpProxy from 'http-proxy'
-import bodyParser from 'body-parser'
+//import bodyParser from 'body-parser'
 
 import winston from 'winston'
 
@@ -11,8 +11,8 @@ export default class Proxy {
     this.proxy = httpProxy.createProxyServer({ ws: true })
 
 
-    this.app.use(bodyParser.json()) // support json encoded bodies
-    this.app.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
+    //this.app.use(bodyParser.json()) // support json encoded bodies
+    //this.app.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
 
     this.app.use((req, res, next) => {
         winston.info('search app')
