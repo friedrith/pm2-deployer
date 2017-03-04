@@ -3,12 +3,14 @@ import EventEmitter from 'events'
 import winston from 'winston'
 import bodyParser from 'body-parser'
 import crypto from 'crypto'
+import morgan from 'morgan'
 
 export default class WebhookCatcher extends EventEmitter {
   constructor (config) {
     super()
     this.app = express()
 
+    this.app.use(morgan())
     this.app.use(bodyParser.json())
     this.app.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
 
@@ -78,8 +80,8 @@ export default class WebhookCatcher extends EventEmitter {
       res.sendStatus(404)
     })
 
-    this.server = this.app.listen(process.env.PORT, () => {
-      winston.info(`listening on port ${this.server.address().port}`)
+    this.server = this.app.listen(process.env.PORT, '127.0.0.1', () => {
+      winston.info(`webhook catcher listening on port ${this.server.address().port}`)
     })
   }
 }

@@ -37,7 +37,7 @@ export default class Proxy {
     })
 
     this.server = this.app.listen(process.env.PORT_PROXY, '0.0.0.0', () => { //start web server
-      winston.info(`listening on port ${this.server.address().port}`)
+      winston.info(`proxy listening on port ${this.server.address().port}`)
     }).on('error', (err) => {
       winston.error('error listen', { error: err })
     })
