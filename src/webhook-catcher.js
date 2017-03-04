@@ -73,6 +73,8 @@ export default class WebhookCatcher extends EventEmitter {
           this.emit('webhook', { app: app, from: 'github' })
         }
       }
+
+      res.send('ok')
     })
 
     this.app.use('*', (req, res) => {
@@ -83,6 +85,5 @@ export default class WebhookCatcher extends EventEmitter {
       winston.info(`webhook catcher listening on port ${this.server.address().port}`)
     })
 
-    res.send('ok')
   }
 }
