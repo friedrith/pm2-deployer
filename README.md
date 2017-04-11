@@ -1,6 +1,6 @@
 # pm2-deployer
 
-It is a tool to easily deploy application managed by pm2 and hosted on github or bitbucket catching webhooks.
+It is a tool to easily deploy web applications managed by pm2 and hosted on github or bitbucket catching webhooks.
 
 With *pm2-deployer*:
 * redeploy automatically web applications after push on bitbucket or github repositories
