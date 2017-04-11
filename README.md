@@ -4,7 +4,7 @@ It is a tool to easily deploy web applications managed by pm2 and hosted on gith
 
 With **pm2-deployer**:
 * redeploy automatically web applications after push on bitbucket or github repositories
-* [optionnal] use several web application on the same server thanks to the proxy
+* [optionnal] use several web application on the same server thanks to a proxy integrated in **pm2-deployer**
 
 ## Get started
 
