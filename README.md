@@ -91,7 +91,7 @@ Then on your bitbucket repository, go to Settings > Webhooks > Add webhook and u
 * SSL/TLS: checked if your pm2-deployer is accessible with https
 * trigger: Repository Push
 
-If your bitbucket repository is private, you need to define a ssh key to so be enable to pull and get new version of your web application.
+If your bitbucket repository is private, you need to define a ssh key to be enabled to pull and get the new version of your web application.
 
 Generate the ssh key in the server hosting **pm2-deployer** with command `ssh-keygen -N "" -f ssh_rsa` (you need to use empty passphrase). Then add the public key in the bitbucket repository as access keys : got to Settings > Access keys > Add key.
 
