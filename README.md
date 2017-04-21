@@ -86,7 +86,7 @@ bitbucket:
 Then on your bitbucket repository, go to Settings > Webhooks > Add webhook and use the following configuration:
 
 * Title: whatever you want
-* URL: <host to your pm2-deployer>/webhook/bitbucket/<web app 1>/<token>
+* URL: `<host to your pm2-deployer>/webhook/bitbucket/<web app 1>/<token>`
 * Status: checked
 * SSL/TLS: checked if your pm2-deployer is accessible with https
 * trigger: Repository Push
