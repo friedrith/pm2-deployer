@@ -1,0 +1,27 @@
+base: ../ # do not change for now
+github:
+  token:  <github token>  # in order to securised webhooks
+bitbucket:
+  token: <bitbucket token>
+  ssh_key: <path to rsa key>
+slack:
+  hook_url: https://hooks.slack.com/services/T061B7NG/B0747PH/zOcim9HYwcqlK8IqTAWOv
+  name: assistant
+  channel: general
+apps:
+  - name: <repository-name>
+    repo: <repository-url>
+    branch: <repository-branch>
+    script: <path to script>
+    url: <domain name>
+    env:
+      NODE_ENV: production
+      PORT: 3000
+  - name: pm2-deployer
+    repo: https://github.com/thibaultfriedrich/pm2-deployer.git
+    branch: master
+    script: ../pm2-deployer/dist/server.js
+    url: deploy.elqui.io
+    env:
+      NODE_ENV: production
+      PORT: 3001
