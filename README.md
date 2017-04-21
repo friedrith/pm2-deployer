@@ -1,10 +1,8 @@
 # pm2-deployer
 
-It is a tool to easily deploy web applications managed by pm2 and hosted on github or bitbucket catching webhooks.
+It is a tool to easily deploy web applications managed by pm2 and hosted on github or bitbucket. It catches webhooks in order to automatically redeploy the webapps.
 
-With **pm2-deployer**:
-* redeploy automatically web applications after push on bitbucket or github repositories
-* [optionnal] use several web application on the same server thanks to a proxy integrated in **pm2-deployer**
+Finally, it integrates a proxy that you may starts in order to manage several web apps and avoid nginx installation
 
 ## Get started
 
@@ -13,7 +11,7 @@ $ git clone https://github.com/thibaultfriedrich/pm2-deployer.git
 $ cd pm2-deployer
 $ cp examples/config.yaml config.yaml
 
-# update the file config.yaml in order to define all apps
+# update the file config.yaml in order to define all apps (config.yaml is a pm2 config file with little improvements).
 
 cd ../
 
@@ -44,7 +42,7 @@ We encourage you to get this web application folders architecture :
   > config.yaml
   > package.json
   > ...
-+ web app 1 # directly cloned from your repository
++ web app 1 # directly cloned from its repository
 + web app 2
 + web app 3
 ```
@@ -91,10 +89,10 @@ Then on your bitbucket repository, go to Settings > Webhooks > Add webhook and u
 * SSL/TLS: checked if your pm2-deployer is accessible with https
 * trigger: Repository Push
 
+
 If your bitbucket repository is private, you need to define a ssh key to be enabled to pull and get the new version of your web application.
 
 Generate the ssh key in the server hosting **pm2-deployer** with command `ssh-keygen -N "" -f ssh_rsa` (you need to use empty passphrase). Then add the public key in the bitbucket repository as access keys : got to Settings > Access keys > Add key.
-
 
 > At the opposite of github, it works for private repositories on bitbucket
 
@@ -137,7 +135,11 @@ apps:
     # ...
 ```
 
-**pm2-deployer** is used to detect pushes on repositories but as **pm2-deployer** has access to a lot of information, **pm2-deployer** may be also used as a proxy for all your web application managed by pm2 and **pm2-deployer**.
+In order to redeploy your web app, *pm2-deployer* calls command `npm run build`. So be sure to compile your web app with this npm script.
+
+### proxy
+
+**pm2-deployer** is used to detect pushes on repositories but as **pm2-deployer** has access to a lot of information, so **pm2-deployer** may be also used as a proxy for all your web applications managed by pm2 and **pm2-deployer**.
 
 You might use nginx as proxy for web application for significant traffic but **pm2-deployer** proxy is easier to use for small traffic because you need only one config file to manage pm2, deployment and proxy.
 
