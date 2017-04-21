@@ -135,7 +135,7 @@ apps:
     # ...
 ```
 
-In order to redeploy your web app, *pm2-deployer* calls command `npm run build`. So be sure to compile your web app with this npm script.
+**In order to redeploy your web app, pm2-deployer calls command `npm run build`. So be sure to compile your web app with this npm script.**
 
 ### proxy
 
