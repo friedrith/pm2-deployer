@@ -7,15 +7,21 @@ import yaml from 'js-yaml'
 import git from 'simple-git'
 import { exec } from 'child_process'
 
-import Proxy from './proxy'
-import WebhookCatcher from './webhook-catcher'
+import WebhookCatcher from 'webhook-catcher'
+import express from 'express'
+
+import StadaloneProxy from './proxy/standalone'
+import NginxProxy from './proxy/nginx'
+// import WebhookCatcher from './webhook-catcher'
+
+import DefaultNotifier from './notifiers/default'
 import SlackNotifier from './notifiers/slack'
 
 if (process.env.NODE_ENV !== 'production') {
   try {
     dotenv.config()
   } catch (err) {
-    winston.log('error', err)
+    winston.error(err)
     process.exit(2)
   }
 }
@@ -25,34 +31,79 @@ let config = null
 try {
   config = yaml.safeLoad(fs.readFileSync(__dirname + '/../config.yaml', 'utf8'))
 } catch (err) {
-  winston.log('error', err)
+  winston.error(err)
   process.exit(2)
 }
 
 // console.log(config)
 
-let notifier = new SlackNotifier(config)
-
-if ('true' === process.env.PROXY) {
-  new Proxy(config)
+let notifier = null
+if (config.notifiers.slack) {
+  notifier = new SlackNotifier(config.notifiers.slack)
+} else {
+  notifier = new DefaultNotifier()
 }
 
-let catcher = new WebhookCatcher(config)
+if ('true' === process.env.PROXY || 'standalone' === process.env.PROXY) {
+  new StadaloneProxy(config)
+} else if ('nginx' === process.env.PROXY) {
+  winston.info('setup config nginx')
+  const proxy = new NginxProxy(config)
+  proxy.generateConfig(path.resolve(__dirname, '../config'))
+} else {
+  winston.info('no proxy')
+}
 
-catcher.on('webhook', ({ app, from }) => {
-  winston.info('reploy', app.name)
+const app = express()
 
-  let repositoryPath = path.join(__dirname, '../', config.base, app.path ? app.path : app.name)
+const catcher = new WebhookCatcher({
+  services: [ 'bitbucket', 'github' ],
+  token: config.accounts.token,
+})
+
+app
+.use('/webhook', catcher.router)
+.get('/', (req, res) => {
+    res.send('ok')
+})
+.use('*', (req, res) => {
+  res.sendStatus(404)
+})
+
+const server = app.listen(process.env.PORT, '127.0.0.1', () => {
+  winston.info(`webhook catcher listening on port ${server.address().port}`)
+})
+
+// let catcher = new WebhookCatcher(config)
+
+catcher.on('push', ({ appName, branch }) => {
+
+  let app = null
+
+  for (let currentApp of config.apps) {
+    if (appName === currentApp.name && branch === currentApp.branch) {
+      app = currentApp
+    }
+  }
+
+  if (app === null) {
+    winston.error(`impossible to redeploy app ${appName}, app not found in configuration file`)
+    return
+  }
+
+  winston.info('reploy', appName)
+
+  let repositoryPath = path.join(__dirname, '../', config.root_directory, app.path ? app.path : app.name)
 
   let repository = git(repositoryPath)
 
   let raw = []
-  if (from === 'bitbucket' && config.bitbucket && config.bitbucket.ssh_key) {
+  if (service === 'bitbucket' && config.accounts.bitbucket && config.accounts.bitbucket.ssh_key) {
     raw = [
         'config',
         '--local',
         'core.sshCommand',
-        '/usr/bin/ssh -i ' + path.join(__dirname, '../', config.bitbucket.ssh_key)
+        '/usr/bin/ssh -i ' + path.join(__dirname, '../', config.accounts.bitbucket.ssh_key)
     ]
   }
 
@@ -63,11 +114,11 @@ catcher.on('webhook', ({ app, from }) => {
   .pull((err) => {
     if (err) {
       notifier.error(app)
-      winston.log('error', err)
+      winston.error(err)
     } else {
       exec('cd ' + repositoryPath + ' && npm install && npm run build && pm2 restart ' + app.name, (error, stdout, stderr) => {
         if (error) {
-          winston.log('error', err, stdout, stderr)
+          winston.error(err, stdout, stderr)
           notifier.error(app)
         } else {
           /*pm2.connect((err) => {

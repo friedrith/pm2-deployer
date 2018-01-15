@@ -2,18 +2,15 @@
 
 It is a tool to easily deploy web applications managed by pm2 and hosted on github or bitbucket. It catches webhooks in order to automatically redeploy the webapps.
 
-Finally, it integrates a proxy that you may starts in order to manage several web apps and avoid nginx installation
+Moreover, it integrates a standalone proxy in order to avoid nginx installation for small projects.
 
 ## Get started
 
 ```bash
 $ git clone https://github.com/thibaultfriedrich/pm2-deployer.git
-$ cd pm2-deployer
-$ cp examples/config.yaml config.yaml
 
-# update the file config.yaml in order to define all apps (config.yaml is a pm2 config file with little improvements).
-
-cd ../
+# update the file config.yaml in order to define all apps (config.yaml is a pm2 config file with little retrocompatible improvements).
+# always keep app pm2-deployer, otherwise pm2-depoyer will not be started by pm2
 
 # for all apps
 $ git clone <repository>
@@ -139,7 +136,7 @@ apps:
 
 ### proxy
 
-**pm2-deployer** is used to detect pushes on repositories but as **pm2-deployer** has access to a lot of information, so **pm2-deployer** may be also used as a proxy for all your web applications managed by pm2 and **pm2-deployer**.
+**pm2-deployer** is used to detect pushes on repositories but since **pm2-deployer** has access to a lot of information, **pm2-deployer** may be also used as a proxy for all your web applications managed by pm2 and **pm2-deployer**.
 
 You might use nginx as proxy for web application for significant traffic but **pm2-deployer** proxy is easier to use for small traffic because you need only one config file to manage pm2, deployment and proxy.
 
