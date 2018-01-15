@@ -49,7 +49,7 @@ if ('true' === process.env.PROXY || 'standalone' === process.env.PROXY) {
 } else if ('nginx' === process.env.PROXY) {
   winston.info('setup config nginx')
   const proxy = new NginxProxy(config)
-  proxy.generateConfig(path.resolve(__dirname, '../config'))
+  proxy.generateConfig(path.resolve(__dirname, process.env.NGINX_CONFIG_PATH))
 } else {
   winston.info('no proxy')
 }
