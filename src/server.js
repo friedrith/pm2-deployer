@@ -48,8 +48,8 @@ if ('true' === process.env.PROXY || 'standalone' === process.env.PROXY) {
   new StadaloneProxy(config)
 } else if ('nginx' === process.env.PROXY) {
   winston.info('setup config nginx')
-  const proxy = new NginxProxy(config)
-  proxy.generateConfig(path.resolve(__dirname, process.env.NGINX_CONFIG_PATH))
+  const proxy = new NginxProxy(config, path.resolve(__dirname, '../examples/nginx-default.conf'))
+  proxy.generateConfig(path.resolve(__dirname, '../', process.env.NGINX_CONFIG_PATH))
 } else {
   winston.info('no proxy')
 }
@@ -148,9 +148,4 @@ catcher.on('push', ({ appName, branch }) => {
   // console.log('git pull')
   // console.log('npm install')
   // console.log('pm2 restart')
-
-
-
-
-
 })

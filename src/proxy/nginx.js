@@ -3,13 +3,14 @@ import path from 'path'
 import fs from 'fs'
 
 export default class Nginx {
-  constructor (config) {
+  constructor (config, templatePath) {
     this.config = config
+    this.templatePath = templatePath
   }
 
   findTemplate () {
     return new Promise((resolve, reject) => {
-      fs.readFile(path.resolve(__dirname, '../../examples/nginx-default.conf'), 'utf8', (err, data) => {
+      fs.readFile(this.templatePath, 'utf8', (err, data) => {
         if (err) {
           reject(err)
         } else {
