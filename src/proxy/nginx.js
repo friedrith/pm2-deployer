@@ -54,12 +54,14 @@ export default class Nginx {
       this.config.apps.forEach(app => {
         if (app.env.PORT && app.url) {
           const filename = app.url.replace(/\./g, '-')
+          const file_name = app.url.replace(/\./g, '_')
           const content =
             template
+            .replace(/\{\% upstream \%}/g, file_name)
             .replace(/\{\% port \%}/g, app.env.PORT)
             .replace(/\{\% domain_list \%}/g, `${app.url} www.${app.url}`)
             .replace(/\{\% log \%}/g, filename)
-            .replace(/\{\% http \%}/g, app.url.replace(/\./g, '_'))
+            .replace(/\{\% http \%}/g, file_name)
 
           var absoluteFilename = path.resolve(siteAvailablePath, filename)
           fs.writeFileSync(absoluteFilename, content)
