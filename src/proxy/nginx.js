@@ -32,14 +32,14 @@ export default class Nginx {
       const siteAvailablePath = path.resolve(nginxConfigPath, 'sites-available')
 
       // remove all site enabled
-      // fs.readdir(siteEnabledPath, (err, files) => {
-      //   // console.log('files', files)
-      //   files.forEach(file => {
-      //     if (file !== 'default') {
-      //       fs.unlinkSync(path.resolve(siteEnabledPath, file))
-      //     }
-      //   })
-      // })
+      fs.readdir(siteEnabledPath, (err, files) => {
+        // console.log('files', files)
+        files.forEach(file => {
+          if (file !== 'default') {
+            fs.unlinkSync(path.resolve(siteEnabledPath, file))
+          }
+        })
+      })
 
       // remove all site available
       fs.readdir(siteAvailablePath, (err, files) => {

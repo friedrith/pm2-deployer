@@ -5,6 +5,12 @@ import yaml from 'js-yaml'
 import git from 'simple-git'
 import { exec } from 'child_process'
 
+
+
+
+
+
+/*
 import SlackNotifier from './notifiers/slack'
 
 let config = null
@@ -83,3 +89,4 @@ for (const app of config.apps) {
     })
   }
 }
+*/
