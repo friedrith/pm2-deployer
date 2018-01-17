@@ -76,12 +76,12 @@ const server = app.listen(process.env.PORT, '127.0.0.1', () => {
 
 // let catcher = new WebhookCatcher(config)
 
-catcher.on('push', ({ name, branch, service }) => {
+catcher.on('push', ({ appName, branch, service }) => {
 
   let app = null
 
   for (let currentApp of config.apps) {
-    if (name === currentApp.name && branch === currentApp.branch) {
+    if (appName === currentApp.name && branch === currentApp.branch) {
       app = currentApp
     }
   }
