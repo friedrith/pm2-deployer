@@ -59,7 +59,8 @@ export default class Nginx {
             template
             .replace(/\{\% upstream \%}/g, file_name)
             .replace(/\{\% port \%}/g, app.env.PORT)
-            .replace(/\{\% domain_list \%}/g, `www.${app.url} ${app.url}`)
+            .replace(/\{\% domain \%}/g, app.url)
+            .replace(/\{\% www_domain \%}/g, `www.${app.url}`)
             .replace(/\{\% log \%}/g, filename)
             .replace(/\{\% http \%}/g, file_name)
 
