@@ -36,20 +36,28 @@ export default class Nginx {
         // console.log('files', files)
         files.forEach(file => {
           if (file !== 'default') {
+            winston.info('removing file', { file: path.resolve(siteEnabledPath, file) })
             fs.unlinkSync(path.resolve(siteEnabledPath, file))
           }
         })
       })
+
+      winston.info('symlinks removed')
+
 
       // remove all site available
       fs.readdir(siteAvailablePath, (err, files) => {
         // console.log('files', files)
         files.forEach(file => {
           if (file !== 'default') {
+            winston.info('removing file', { file: path.resolve(siteEnabledPath, file) })
             fs.unlinkSync(path.resolve(siteAvailablePath, file))
           }
         })
       })
+
+      winston.info('available removed')
+
 
       this.config.apps.forEach(app => {
         if (app.env.PORT && app.url) {
