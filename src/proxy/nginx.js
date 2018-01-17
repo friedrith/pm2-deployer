@@ -32,28 +32,22 @@ export default class Nginx {
       const siteAvailablePath = path.resolve(nginxConfigPath, 'sites-available')
 
       // remove all site enabled
-      fs.readdir(siteEnabledPath, (err, files) => {
-        // console.log('files', files)
-        files.forEach(file => {
-          if (file !== 'default') {
-            winston.info('removing file', { file: path.resolve(siteEnabledPath, file) })
-            fs.unlinkSync(path.resolve(siteEnabledPath, file))
-          }
-        })
+      const symlinks = fs.readdirSync(siteEnabledPath)
+      symlinks.forEach(file => {
+        if (file !== 'default') {
+          winston.info('removing file', { file: path.resolve(siteEnabledPath, file) })
+          fs.unlinkSync(path.resolve(siteEnabledPath, file))
+        }
       })
 
       winston.info('symlinks removed')
 
-
-      // remove all site available
-      fs.readdir(siteAvailablePath, (err, files) => {
-        // console.log('files', files)
-        files.forEach(file => {
-          if (file !== 'default') {
-            winston.info('removing file', { file: path.resolve(siteEnabledPath, file) })
-            fs.unlinkSync(path.resolve(siteAvailablePath, file))
-          }
-        })
+      const files = fs.readdirSync(siteAvailablePath)
+      files.forEach(file => {
+        if (file !== 'default') {
+          winston.info('removing file', { file: path.resolve(siteEnabledPath, file) })
+          fs.unlinkSync(path.resolve(siteAvailablePath, file))
+        }
       })
 
       winston.info('available removed')
