@@ -76,18 +76,19 @@ const server = app.listen(process.env.PORT, '127.0.0.1', () => {
 
 // let catcher = new WebhookCatcher(config)
 
-catcher.on('push', ({ appName, branch }) => {
+catcher.on('push', ({ name, branch, service }) => {
 
   let app = null
 
   for (let currentApp of config.apps) {
-    if (appName === currentApp.name && branch === currentApp.branch) {
+    if (name === currentApp.name && branch === currentApp.branch) {
       app = currentApp
     }
   }
 
   if (app === null) {
-    winston.error(`impossible to redeploy app ${appName}, app not found in configuration file`)
+    winston.error(`impossible to redeploy app ${app.name}, app not found in configuration file`)
+    notifier.error(app)
     return
   }
 
